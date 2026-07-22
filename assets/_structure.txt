@@ -1,5 +1,8 @@
 tiles
 	floor0.bmp
 	empty.bmp
+	MC-sprite-stand.png
+sprites
+	TextBox.png
 levels
 	level0.txt

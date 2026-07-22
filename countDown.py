@@ -4,12 +4,18 @@
 # Compilation command "pyinstaller --onefile countDown.py"
 #
 
+VERSION = "0.02"
+
+header = ("COUNTDOWN GAMEJAM - VERSION : " + VERSION)
+print(header)
+
 # Importing libraries
 import pygame
 import ctypes
 import time
 
 pygame.init()
+pygame.font.init()
 
 nativeDisplaySize = (1920, 1080)
 display = pygame.Surface(nativeDisplaySize)
@@ -18,8 +24,16 @@ gfx = {}
 tileSize = 135
 tileImages = {
               "." : "empty",
-              "#" : "floor0"
+              "#" : "floor0",
+              "@" : "MC-sprite-stand"
               }
+font = pygame.font.SysFont('Comic Sans MS', 40)
+showingText = False
+dialogueQueue = []
+currentDialogue = ""
+pressingInteract = 0
+alreadyMoved = False
+moveDir = 0
 
 def DepthDictInsert (dictionary, path, item):
     subDict = dictionary
@@ -86,7 +100,7 @@ def LoadStructure (structureDefPath):
             text = str(f.read())
             f.close()
             DepthDictInsert(structure, (subFolders + [fileName]), text)
-        elif fileExtension == "bmp":
+        elif fileExtension in ["bmp", "png"]:
             # Load image file
             image = pygame.image.load(filePath + fileFullName)
             DepthDictInsert(structure, (subFolders + [fileName]), image)
@@ -112,7 +126,20 @@ def SetupDisplay ():
     ctypes.windll.user32.SetProcessDPIAware()
     size = GetDisplaySize()
     screenScaled = pygame.display.set_mode(size, pygame.RESIZABLE)
+    pygame.display.set_caption(header)
     return screenScaled
+
+def DrawText (text, size):
+    lineHeight = 60
+    textSurface = pygame.Surface(size, pygame.SRCALPHA)
+    for i in text:
+        lines = text.split("\n")
+    lineNum = 0
+    for line in lines:
+        textLine = font.render(line, True, (0, 0, 255))
+        textSurface.blit(textLine, (0, lineNum * lineHeight))
+        lineNum += 1
+    return textSurface
 
 def Draw (screenScaled, level):
     global display
@@ -121,14 +148,21 @@ def Draw (screenScaled, level):
     for y in range(0, len(level)):
         for x in range(0, len(level[0])):
             display.blit(gfx["tiles"][tileImages[level[y][x]]], (x * tileSize, y * tileSize))
-            
+    # Draw textbox
+    if showingText:
+        textBox = gfx["sprites"]["TextBox"].copy()
+        textSurface = DrawText(currentDialogue, (800, 600))
+        textBox.blit(textSurface, (620, 80))
+        # Add button tip
+        buttonTip = DrawText("Press space to continue...", (500, 80))
+        textBox.blit(buttonTip, (textBox.get_width() - buttonTip.get_width() - 80, textBox.get_height() - buttonTip.get_height() - 80))
+        display.blit(textBox, (((nativeDisplaySize[0] - textBox.get_width()) * 0.5), textBox.get_height() - 200))
     # Scale and flip the display
     pixelScale = 1
     if (screenScaled.get_width() / nativeDisplaySize[0]) < (screenScaled.get_height() / nativeDisplaySize[1]):
         pixelScale = (screenScaled.get_height() / nativeDisplaySize[1])
     else:
         pixelScale = (screenScaled.get_width() / nativeDisplaySize[0])
-    print(pixelScale)
     screenScaled.blit(pygame.transform.scale(display, (nativeDisplaySize[0] * pixelScale, nativeDisplaySize[1] * pixelScale)), (0, 0))
     pygame.display.flip()
 
@@ -140,20 +174,98 @@ def ParseLevel (string):
     print(level)
     return level
 
+def ForEachTile (level, tileFunc):
+    for y in range(0, len(level)):
+        for x in range(0, len(level[0])):
+            tileFunc(level, x, y)
+
+def Tick (level):
+    global dialogueQueue
+    global currentDialogue
+    global showingText
+    global pressingInteract
+    global alreadyMoved
+    global moveDir
+    running = True
+    keys = pygame.key.get_pressed()
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+    if keys[pygame.K_SPACE] or keys[pygame.K_z]:
+        pressingInteract += 1
+    else:
+        pressingInteract = 0
+
+    # Allow player to navigate dialogue
+    if pressingInteract == 1 and showingText:
+        if len(dialogueQueue) == 0:
+            showingText = False
+        else:
+            currentDialogue = dialogueQueue.pop(0)
+    if len(dialogueQueue) > 0:
+        if not showingText:
+            showingText = True
+            currentDialogue = dialogueQueue.pop(0)
+
+    # Player movement
+    moveWait = 4
+    alreadyMoved = False
+    if keys[pygame.K_RIGHT] and not keys[pygame.K_LEFT]:
+        moveDir = max(0, moveDir)
+        moveDir += 1
+    elif keys[pygame.K_LEFT] and not keys[pygame.K_RIGHT]:
+        moveDir = min(0, moveDir)
+        moveDir -= 1
+    else:
+        moveDir = 0
+    if moveDir > 0 and (moveDir % moveWait) == 1:
+        ForEachTile(level, Right)
+    if moveDir < 0 and (-moveDir % moveWait) == 1:
+        ForEachTile(level, Left)
+    # Gravity
+    ForEachTile(level, Gravity)
+    return running
+
+def Right(level, x, y):
+    global alreadyMoved
+    if level[y][x] == "@":
+        if level[y][x + 1] == ".":
+            if not alreadyMoved:
+                alreadyMoved = True
+                level[y][x + 1] = "@"
+                level[y][x] = "."
+
+def Left(level, x, y):
+    global alreadyMoved
+    if level[y][x] == "@":
+        if level[y][x - 1] == ".":
+            if not alreadyMoved:
+                alreadyMoved = True
+                level[y][x - 1] = "@"
+                level[y][x] = "."
+
+def Gravity(level, x, y):
+    if level[y][x] == "@":
+        if level[y + 1][x] == ".":
+            level[y + 1][x] = "@"
+            level[y][x] = "."
+
 def MainLoop ():
     screenScaled = SetupDisplay()
     lastFrame = time.perf_counter()
     running = True
     LoadGraphics()
     level = ParseLevel(gfx["levels"]["level0"])
+    dialogueQueue.append("Hello there! Blahblahblahblah")
+    dialogueQueue.append("Have you ever been to the moon?\nI have.")
+    dialogueQueue.append("Ham and cheese omlete")
     while (running):
         while time.perf_counter() - lastFrame < (1 / FPS):
             pass
         lastFrame = time.perf_counter()
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
         Draw(screenScaled, level)
+        running = Tick(level)
+        
     pygame.quit()
     print("Game ended.")
 
