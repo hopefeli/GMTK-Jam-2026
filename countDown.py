@@ -4,7 +4,7 @@
 # Compilation command "pyinstaller --onefile countDown.py"
 #
 
-VERSION = "0.02"
+VERSION = "0.04"
 
 header = ("COUNTDOWN GAMEJAM - VERSION : " + VERSION)
 print(header)
@@ -13,6 +13,7 @@ print(header)
 import pygame
 import ctypes
 import time
+import copy
 
 pygame.init()
 pygame.font.init()
@@ -24,8 +25,29 @@ gfx = {}
 tileSize = 135
 tileImages = {
               "." : "empty",
-              "#" : "floor0",
-              "@" : "MC-sprite-stand"
+              "#" : "empty",
+              "@" : "MC-sprite-stand",
+              "B" : "crate-wooden",
+              "0" : "floor-concrete-corner-2",
+              "1" : "floor-concrete-corner-divide",
+              "2" : "floor-concrete-divide-top",
+              "3" : "floor-concrete-divide",
+              "4" : "floor-concrete-left",
+              "5" : "floor-concrete-right",
+              "6" : "floor-concrete-top-1",
+              "7" : "floor-concrete-top-2",
+              "a" : "building-blue-left",
+              "b" : "building-blue-right",
+              "c" : "building-blue-variant-1",
+              "d" : "building-blue-variant-2",
+              "e" : "building-blue",
+              "f" : "building-door",
+              "g" : "building-entry-left",
+              "h" : "building-entry-middle",
+              "i" : "building-entry-right",
+              "j" : "building-window-1",
+              "k" : "building-window-2",
+              "=" : "stairs-concrete",
               }
 font = pygame.font.SysFont('Comic Sans MS', 40)
 showingText = False
@@ -34,6 +56,8 @@ currentDialogue = ""
 pressingInteract = 0
 alreadyMoved = False
 moveDir = 0
+records = []
+cloudX = 0
 
 def DepthDictInsert (dictionary, path, item):
     subDict = dictionary
@@ -144,10 +168,14 @@ def DrawText (text, size):
 def Draw (screenScaled, level):
     global display
     display.fill("#FF0000")
+    clouds = gfx["sprites"]["bg-cloudy"]
+    display.blit(clouds, ((cloudX) % clouds.get_width(), 0))
+    display.blit(clouds, (((cloudX) % clouds.get_width()) - clouds.get_width(), 0))
     # Draw the game screen
-    for y in range(0, len(level)):
-        for x in range(0, len(level[0])):
-            display.blit(gfx["tiles"][tileImages[level[y][x]]], (x * tileSize, y * tileSize))
+    for i in range(len(level) - 1, -1, -1):
+        for y in range(0, len(level[i])):
+            for x in range(0, len(level[i][y])):
+                display.blit(gfx["tiles"][tileImages[level[i][y][x]]], (x * tileSize, y * tileSize))
     # Draw textbox
     if showingText:
         textBox = gfx["sprites"]["TextBox"].copy()
@@ -168,9 +196,13 @@ def Draw (screenScaled, level):
 
 def ParseLevel (string):
     level = []
-    lines = string.split("\n")
-    for line in lines:
-        level.append(list(line))
+    layers = string.split("~")
+    for layer in layers:
+        level.append([])
+        lines = layer.split("\n")
+        for line in lines:
+            if list(line) != []:
+                level[-1].append(list(line))
     print(level)
     return level
 
@@ -179,14 +211,16 @@ def ForEachTile (level, tileFunc):
         for x in range(0, len(level[0])):
             tileFunc(level, x, y)
 
-def Tick (level):
+def Tick (records):
     global dialogueQueue
     global currentDialogue
     global showingText
     global pressingInteract
     global alreadyMoved
     global moveDir
+    global cloudX
     running = True
+    cloudX += 1
     keys = pygame.key.get_pressed()
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -218,36 +252,97 @@ def Tick (level):
         moveDir -= 1
     else:
         moveDir = 0
+    # Play undoing
+    if (pressingInteract % moveWait) == 1 and len(records) > 1:
+        records.pop(-1)
+    # Update game state
+    move = False
     if moveDir > 0 and (moveDir % moveWait) == 1:
-        ForEachTile(level, Right)
+        move = True
     if moveDir < 0 and (-moveDir % moveWait) == 1:
-        ForEachTile(level, Left)
-    # Gravity
-    ForEachTile(level, Gravity)
+        move = True
+    if move:
+        #print(records[-1][0])
+        # Copy to create new level state
+        records.append(copy.deepcopy(records[-1]))
+        # Move
+        if moveDir > 0:
+            ForEachTile(records[-1][0], Right)
+        elif moveDir < 0:
+            ForEachTile(records[-1][0], Left)
+        # Gravity
+        preLevel = []
+        while preLevel != records[-1][0]:
+            preLevel = copy.deepcopy(records[-1][0])
+            ForEachTile(records[-1][0], Gravity)
     return running
 
 def Right(level, x, y):
     global alreadyMoved
-    if level[y][x] == "@":
-        if level[y][x + 1] == ".":
-            if not alreadyMoved:
+    if not alreadyMoved:
+        if level[y][x] == "@":
+            if level[y][x + 1] == ".":
                 alreadyMoved = True
                 level[y][x + 1] = "@"
                 level[y][x] = "."
+                return True
+            if level[y][x + 1] == "B":
+                if BoxRight(level, x + 1, y):
+                    alreadyMoved = True
+                    level[y][x + 1] = "@"
+                    level[y][x] = "."
+                    return True
+    return False
 
 def Left(level, x, y):
     global alreadyMoved
-    if level[y][x] == "@":
-        if level[y][x - 1] == ".":
-            if not alreadyMoved:
+    if not alreadyMoved:
+        if level[y][x] == "@":
+            if level[y][x - 1] == ".":
                 alreadyMoved = True
                 level[y][x - 1] = "@"
                 level[y][x] = "."
+                return True
+            if level[y][x - 1] == "B":
+                if BoxLeft(level, x - 1, y):
+                    alreadyMoved = True
+                    level[y][x - 1] = "@"
+                    level[y][x] = "."
+                    return True
+    return False
+
+def BoxLeft(level, x, y):
+    if level[y][x - 1] == "B":
+        if BoxLeft(level, x - 1, y):
+            level[y][x - 1] = "B"
+            level[y][x] = "."
+            return True
+    if level[y][x - 1] == ".":
+        level[y][x - 1] = "B"
+        level[y][x] = "."
+        return True
+    return False
+
+def BoxRight(level, x, y):
+    if level[y][x + 1] == "B":
+        if BoxRight(level, x + 1, y):
+            level[y][x + 1] = "B"
+            level[y][x] = "."
+            return True
+    if level[y][x + 1] == ".":
+        level[y][x + 1] = "B"
+        level[y][x] = "."
+        return True
+    return False
 
 def Gravity(level, x, y):
     if level[y][x] == "@":
         if level[y + 1][x] == ".":
             level[y + 1][x] = "@"
+            level[y][x] = "."
+    if level[y][x] == "B":
+        if level[y + 1][x] == ".":
+            level[y + 1][x] = "B"
             level[y][x] = "."
 
 def MainLoop ():
@@ -255,7 +350,7 @@ def MainLoop ():
     lastFrame = time.perf_counter()
     running = True
     LoadGraphics()
-    level = ParseLevel(gfx["levels"]["level0"])
+    records = [ParseLevel(gfx["levels"]["level0"])]
     dialogueQueue.append("Hello there! Blahblahblahblah")
     dialogueQueue.append("Have you ever been to the moon?\nI have.")
     dialogueQueue.append("Ham and cheese omlete")
@@ -263,8 +358,8 @@ def MainLoop ():
         while time.perf_counter() - lastFrame < (1 / FPS):
             pass
         lastFrame = time.perf_counter()
-        Draw(screenScaled, level)
-        running = Tick(level)
+        Draw(screenScaled, records[-1])
+        running = Tick(records)
         
     pygame.quit()
     print("Game ended.")

@@ -2,7 +2,29 @@ tiles
 	floor0.bmp
 	empty.bmp
 	MC-sprite-stand.png
+	crate-wooden.png
+	floor-concrete-corner-2.png
+	floor-concrete-corner-divide.png
+	floor-concrete-divide-top.png
+	floor-concrete-divide.png
+	floor-concrete-left.png
+	floor-concrete-right.png
+	floor-concrete-top-1.png
+	floor-concrete-top-2.png
+	building-blue-left.png
+	building-blue-right.png
+	building-blue-variant-1.png
+	building-blue-variant-2.png
+	building-blue.png
+	building-door.png
+	building-entry-left.png
+	building-entry-middle.png
+	building-entry-right.png
+	building-window-1.png
+	building-window-2.png
+	stairs-concrete.png
 sprites
 	TextBox.png
+	bg-cloudy.png
 levels
 	level0.txt
