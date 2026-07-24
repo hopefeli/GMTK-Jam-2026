@@ -21,7 +21,7 @@ blank - DOCTOR: Are you sure about that?
 
 blank - SHOCKED: Oh! Uh...
 
-blank - MC: Sorry, bad habit.
+blank - MC: Sorry. I guess it's just a bad habit.
 
 blank - DOCTOR: Well, you're all good to go MC, but...I'd recommend you talk to your loved ones about about this issue immediately.
 
