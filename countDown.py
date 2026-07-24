@@ -4,7 +4,7 @@
 # Compilation command "pyinstaller --onefile countDown.py"
 #
 
-VERSION = "0.04"
+VERSION = "0.10"
 
 header = ("COUNTDOWN GAMEJAM - VERSION : " + VERSION)
 print(header)
@@ -49,15 +49,19 @@ tileImages = {
               "k" : "building-window-2",
               "=" : "stairs-concrete",
               }
-font = pygame.font.SysFont('Comic Sans MS', 40)
+font = pygame.font.Font(".\\assets\\MonospaceRegular-6ZWg.ttf", 40)#'Comic Sans MS', 40)
 showingText = False
 dialogueQueue = []
 currentDialogue = ""
 pressingInteract = 0
 alreadyMoved = False
-moveDir = 0
+moveDir = [0, 0]
 records = []
 cloudX = 0
+standable = [".", "="]
+stairs = ["=", "+"]
+won = False
+levelNum = 0
 
 def DepthDictInsert (dictionary, path, item):
     subDict = dictionary
@@ -126,7 +130,7 @@ def LoadStructure (structureDefPath):
             DepthDictInsert(structure, (subFolders + [fileName]), text)
         elif fileExtension in ["bmp", "png"]:
             # Load image file
-            image = pygame.image.load(filePath + fileFullName)
+            image = pygame.image.load(filePath + fileFullName).convert_alpha()
             DepthDictInsert(structure, (subFolders + [fileName]), image)
         elif fileExtension == "ogg":
             # Load sound file
@@ -175,15 +179,25 @@ def Draw (screenScaled, level):
     for i in range(len(level) - 1, -1, -1):
         for y in range(0, len(level[i])):
             for x in range(0, len(level[i][y])):
-                display.blit(gfx["tiles"][tileImages[level[i][y][x]]], (x * tileSize, y * tileSize))
+                if level[i][y][x] != ".":
+                    display.blit(gfx["tiles"][tileImages[level[i][y][x]]], (x * tileSize, y * tileSize))
     # Draw textbox
     if showingText:
+        # Draw background
+        if currentDialogue[0] in gfx["illustrations"]:
+            display.blit(gfx["illustrations"][currentDialogue[0]], (0, 0))
+        # Text
         textBox = gfx["sprites"]["TextBox"].copy()
-        textSurface = DrawText(currentDialogue, (800, 600))
+        textSurface = DrawText(currentDialogue[2], (900, 600))
         textBox.blit(textSurface, (620, 80))
         # Add button tip
-        buttonTip = DrawText("Press space to continue...", (500, 80))
+        buttonTip = DrawText("Press space to continue...", (700, 80))
         textBox.blit(buttonTip, (textBox.get_width() - buttonTip.get_width() - 80, textBox.get_height() - buttonTip.get_height() - 80))
+        # Add pfp
+        pfpName = currentDialogue[1]
+        if pfpName in gfx["cutsceneImages"]:
+            textBox.blit(gfx["cutsceneImages"][pfpName], (80, 80))
+        # Blit textbox onto screen
         display.blit(textBox, (((nativeDisplaySize[0] - textBox.get_width()) * 0.5), textBox.get_height() - 200))
     # Scale and flip the display
     pixelScale = 1
@@ -203,12 +217,11 @@ def ParseLevel (string):
         for line in lines:
             if list(line) != []:
                 level[-1].append(list(line))
-    print(level)
     return level
 
 def ForEachTile (level, tileFunc):
-    for y in range(0, len(level)):
-        for x in range(0, len(level[0])):
+    for y in range(0, len(level[0])):
+        for x in range(0, len(level[0][y])):
             tileFunc(level, x, y)
 
 def Tick (records):
@@ -219,13 +232,15 @@ def Tick (records):
     global alreadyMoved
     global moveDir
     global cloudX
+    global won
+    global levelNum
     running = True
     cloudX += 1
     keys = pygame.key.get_pressed()
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-    if keys[pygame.K_SPACE] or keys[pygame.K_z]:
+    if keys[pygame.K_SPACE] or keys[pygame.K_z] or keys[pygame.K_RETURN]:
         pressingInteract += 1
     else:
         pressingInteract = 0
@@ -245,118 +260,256 @@ def Tick (records):
     moveWait = 4
     alreadyMoved = False
     if keys[pygame.K_RIGHT] and not keys[pygame.K_LEFT]:
-        moveDir = max(0, moveDir)
-        moveDir += 1
+        moveDir = [max(0, moveDir[0]), 0]
+        moveDir[0] += 1
     elif keys[pygame.K_LEFT] and not keys[pygame.K_RIGHT]:
-        moveDir = min(0, moveDir)
-        moveDir -= 1
+        moveDir = [min(0, moveDir[0]), 0]
+        moveDir[0] -= 1
+    elif keys[pygame.K_UP] and not keys[pygame.K_DOWN]:
+        moveDir = [0, min(0, moveDir[1])]
+        moveDir[1] -= 1
+    elif keys[pygame.K_DOWN] and not keys[pygame.K_UP]:
+        moveDir = [0, max(0, moveDir[1])]
+        moveDir[1] += 1
     else:
-        moveDir = 0
+        moveDir = [0, 0]
     # Play undoing
     if (pressingInteract % moveWait) == 1 and len(records) > 1:
         records.pop(-1)
     # Update game state
     move = False
-    if moveDir > 0 and (moveDir % moveWait) == 1:
+    if moveDir[0] > 0 and (moveDir[0] % moveWait) == 1:
         move = True
-    if moveDir < 0 and (-moveDir % moveWait) == 1:
+    if moveDir[0] < 0 and (-moveDir[0] % moveWait) == 1:
+        move = True
+    if moveDir[1] > 0 and (moveDir[1] % moveWait) == 1:
+        move = True
+    if moveDir[1] < 0 and (-moveDir[1] % moveWait) == 1:
         move = True
     if move:
         #print(records[-1][0])
         # Copy to create new level state
         records.append(copy.deepcopy(records[-1]))
         # Move
-        if moveDir > 0:
-            ForEachTile(records[-1][0], Right)
-        elif moveDir < 0:
-            ForEachTile(records[-1][0], Left)
+        if moveDir[0] > 0:
+            ForEachTile(records[-1], Right)
+        elif moveDir[0] < 0:
+            ForEachTile(records[-1], Left)
+        elif moveDir[1] > 0:
+            ForEachTile(records[-1], Down)
+        elif moveDir[1] < 0:
+            ForEachTile(records[-1], Up)
         # Gravity
         preLevel = []
-        while preLevel != records[-1][0]:
-            preLevel = copy.deepcopy(records[-1][0])
-            ForEachTile(records[-1][0], Gravity)
+        while preLevel != records[-1]:
+            preLevel = copy.deepcopy(records[-1])
+            ForEachTile(records[-1], Gravity)
+        # Winning
+        won = False
+        ForEachTile(records[-1], Win)
+        if won:
+            # load in next level
+            levelNum += 1
+            records[:] = GetCurrentLevel()
+        # If nothing has changed, delete newest record
+        if len(records) > 1 and records[-1] == records[-2]:
+            records.pop(-1)
     return running
+
+def Win(level, x, y):
+    global won
+    if x == 14 and level[0][y][x] == "@":
+        won = True
+
+def Down(level, x, y):
+    global alreadyMoved
+    if not alreadyMoved:
+        if level[0][y][x] == "@":
+            if level[1][y + 1][x] in standable:
+                if level[0][y + 1][x] == "B":
+                    if BoxDown(level, x, y + 1):
+                        alreadyMoved = True
+                        level[0][y + 1][x] = "@"
+                        level[0][y][x] = "."
+                        return True
+                else:
+                    alreadyMoved = True
+                    level[0][y + 1][x] = "@"
+                    level[0][y][x] = "."
+                    return True
+    return False
+
+def Up(level, x, y):
+    global alreadyMoved
+    if not alreadyMoved:
+        if level[0][y][x] == "@" and level[1][y][x] in stairs:
+            if level[1][y - 1][x] in standable:
+                if level[0][y - 1][x] == "B":
+                    if BoxUp(level, x, y - 1):
+                        alreadyMoved = True
+                        level[0][y - 1][x] = "@"
+                        level[0][y][x] = "."
+                        return True
+                else:
+                    alreadyMoved = True
+                    level[0][y - 1][x] = "@"
+                    level[0][y][x] = "."
+                    return True
+    return False
 
 def Right(level, x, y):
     global alreadyMoved
     if not alreadyMoved:
-        if level[y][x] == "@":
-            if level[y][x + 1] == ".":
-                alreadyMoved = True
-                level[y][x + 1] = "@"
-                level[y][x] = "."
-                return True
-            if level[y][x + 1] == "B":
-                if BoxRight(level, x + 1, y):
+        if level[0][y][x] == "@":
+            if level[1][y][x + 1] in standable:
+                if level[0][y][x + 1] == "B":
+                    if BoxRight(level, x + 1, y):
+                        alreadyMoved = True
+                        level[0][y][x + 1] = "@"
+                        level[0][y][x] = "."
+                        return True
+                else:
                     alreadyMoved = True
-                    level[y][x + 1] = "@"
-                    level[y][x] = "."
+                    level[0][y][x + 1] = "@"
+                    level[0][y][x] = "."
                     return True
     return False
 
 def Left(level, x, y):
     global alreadyMoved
     if not alreadyMoved:
-        if level[y][x] == "@":
-            if level[y][x - 1] == ".":
-                alreadyMoved = True
-                level[y][x - 1] = "@"
-                level[y][x] = "."
-                return True
-            if level[y][x - 1] == "B":
-                if BoxLeft(level, x - 1, y):
+        if level[0][y][x] == "@":
+            if level[1][y][x - 1] in standable:
+                if level[0][y][x - 1] == "B":
+                    if BoxLeft(level, x - 1, y):
+                        alreadyMoved = True
+                        level[0][y][x - 1] = "@"
+                        level[0][y][x] = "."
+                        return True
+                else:
                     alreadyMoved = True
-                    level[y][x - 1] = "@"
-                    level[y][x] = "."
+                    level[0][y][x - 1] = "@"
+                    level[0][y][x] = "."
                     return True
     return False
 
-def BoxLeft(level, x, y):
-    if level[y][x - 1] == "B":
-        if BoxLeft(level, x - 1, y):
-            level[y][x - 1] = "B"
-            level[y][x] = "."
+def BoxUp(level, x, y):
+    if level[1][y - 1][x] in standable:
+        if level[0][y - 1][x] == "B":
+            if BoxUp(level, x, y - 1):
+                level[0][y - 1][x] = "B"
+                level[0][y][x] = "."
+                return True
+        else:
+            level[0][y - 1][x] = "B"
+            level[0][y][x] = "."
             return True
-    if level[y][x - 1] == ".":
-        level[y][x - 1] = "B"
-        level[y][x] = "."
-        return True
+    return False
+
+def BoxDown(level, x, y):
+    if level[1][y + 1][x] in standable:
+        if level[0][y + 1][x] == "B":
+            if BoxUp(level, x, y + 1):
+                level[0][y + 1][x] = "B"
+                level[0][y][x] = "."
+                return True
+        else:
+            level[0][y + 1][x] = "B"
+            level[0][y][x] = "."
+            return True
+    return False
+
+def BoxLeft(level, x, y):
+    if level[1][y][x - 1] in standable:
+        if level[0][y][x - 1] == "B":
+            if BoxLeft(level, x - 1, y):
+                level[0][y][x - 1] = "B"
+                level[0][y][x] = "."
+                return True
+        else:
+            level[0][y][x - 1] = "B"
+            level[0][y][x] = "."
+            return True
     return False
 
 def BoxRight(level, x, y):
-    if level[y][x + 1] == "B":
-        if BoxRight(level, x + 1, y):
-            level[y][x + 1] = "B"
-            level[y][x] = "."
+    if level[1][y][x + 1] in standable:
+        if level[0][y][x + 1] == "B":
+            if BoxRight(level, x + 1, y):
+                level[0][y][x + 1] = "B"
+                level[0][y][x] = "."
+                return True
+        else:
+            level[0][y][x + 1] = "B"
+            level[0][y][x] = "."
             return True
-    if level[y][x + 1] == ".":
-        level[y][x + 1] = "B"
-        level[y][x] = "."
-        return True
     return False
 
 def Gravity(level, x, y):
-    if level[y][x] == "@":
-        if level[y + 1][x] == ".":
-            level[y + 1][x] = "@"
-            level[y][x] = "."
-    if level[y][x] == "B":
-        if level[y + 1][x] == ".":
-            level[y + 1][x] = "B"
-            level[y][x] = "."
+    if level[0][y][x] == "@" and level[1][y][x] == ".":
+        if level[0][y + 1][x] == "." and level[1][y + 1][x] == ".":
+            level[0][y + 1][x] = "@"
+            level[0][y][x] = "."
+    if level[0][y][x] == "B" and level[1][y][x] == ".":
+        if level[0][y + 1][x] == "." and level[1][y + 1][x] == ".":
+            level[0][y + 1][x] = "B"
+            level[0][y][x] = "."
+
+def FormatChunk (currentchunk, lineCutoff):
+    # Add linebreaks
+    lineText = ""
+    lines = []
+    charIndex = 0
+    while charIndex < len(currentchunk):
+        if currentchunk[charIndex] == "`":
+            lines.append(lineText)
+            lineText = ""
+        elif len(lineText) >= lineCutoff:
+            # If the line is too long,
+            # back up to the previouse word and break there
+            backupIndex = 1
+            while backupIndex < len(lineText) and lineText[-backupIndex] not in [" ", "`", "#"]:
+                backupIndex += 1
+            charIndex -= backupIndex
+            lines.append(lineText[:-backupIndex])
+            lineText = ""
+        else:
+            lineText += currentchunk[charIndex]
+        charIndex += 1
+    lines.append(lineText)
+    # Rejoin lines into a string
+    currentchunk = "\n" + "\n".join(lines)
+    return currentchunk
+
+def GetCurrentLevel():
+    records = [ParseLevel(gfx["levels"]["level" + str(levelNum)])]
+    return records
+
+def PrepDialogue (fileName):
+    global dialogueQueue
+    dialogue = gfx["dialogue"][fileName]
+    lines = dialogue.split("\n")
+    for line in lines:
+        if line.split() != []:
+            blank = "".join(line.split("-")[0].split())
+            pfp, text = line.split("-")[1].split(":")
+            pfp = "".join(pfp.split())
+            cleanText = FormatChunk(text, 32)
+            dialogueQueue.append([blank, pfp, cleanText])
 
 def MainLoop ():
     screenScaled = SetupDisplay()
     lastFrame = time.perf_counter()
     running = True
     LoadGraphics()
-    records = [ParseLevel(gfx["levels"]["level0"])]
-    dialogueQueue.append("Hello there! Blahblahblahblah")
-    dialogueQueue.append("Have you ever been to the moon?\nI have.")
-    dialogueQueue.append("Ham and cheese omlete")
+    records = GetCurrentLevel()
+    PrepDialogue("start")
+##    dialogueQueue.append("Hello there! Blahblahblahblah")
+##    dialogueQueue.append("Have you ever been to the moon?\nI have.")
+##    dialogueQueue.append("Ham and cheese omlete")
     while (running):
         while time.perf_counter() - lastFrame < (1 / FPS):
-            pass
+            pass#print(time.perf_counter() - lastFrame)
         lastFrame = time.perf_counter()
         Draw(screenScaled, records[-1])
         running = Tick(records)

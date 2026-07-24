@@ -1,0 +1,50 @@
+
+blank - DOCTOR: MC, we're deeply sorry about your current situation. I know how sudden this must be for you. 
+
+blank - DOCTOR: We've got the results back, and although your physical condition is perfectly fine, your cardiovascular system is at high risk. 
+
+blank - MC: ...
+
+blank - DOCTOR: Let's see...we've examined your treatment options, but there aren't any that we believe can confidently treat your condition. 
+
+blank - DOCTOR: You don't have much longer to live. Our estimate is that you have less than 24 hours.
+
+blank - MC: ...
+
+blank - MC: It's...fine...
+
+blank - DOCTOR: I know that that's a lot to take in.
+
+blank - MC: No, no. Really it's...fine.
+
+blank - DOCTOR: Are you sure about that?
+
+blank - SHOCKED: Oh! Uh...
+
+blank - MC: Sorry, bad habit.
+
+blank - DOCTOR: Well, you're all good to go MC, but...I'd recommend you talk to your loved ones about about this issue immediately.
+
+blank - DOCTOR: ...Especially considering the urgency of this matter.
+
+blank - MC: My loved ones?
+
+blank - MC: With so little left, what is there to say to them?
+
+blank - MC: What would I...I...
+
+blank - POLAROID: Displays a polaroid held in MC's hand, it shows a fond memory of two friends laughing.
+
+blank - DIAL: The MC tries to dial a number on the phone but it goes unanswered.
+
+blank - SIGH: MC sighs and is about to leave when the phone rings again. MC scrambles to pick up the phone. 
+
+blank - MC: FRIEND? Hey, I'm really sorry about being so absent, I-I need to-
+
+blank - PHONE: HELLO! Just a friendly reminder from your local clinic! You only have 6 hours left to live!
+
+blank - PHONE: If you have any remaining regrets important items on your bucket list, now's the time to get, get, get to it!
+
+blank - GRIM: MC grimaces.
+
+empty - MC: No time left, huh. Guess I gotta do this the hard way.
