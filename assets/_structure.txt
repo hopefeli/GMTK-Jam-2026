@@ -97,4 +97,8 @@ illustrations
 	blank.bmp
 	Polaroid.png
 audio
+	dialoguesound.wav
+	heartbeat.wav
+	heartrate-monitor.wav
+	pushsound.wav
 	titletrack.wav

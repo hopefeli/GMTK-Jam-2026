@@ -4,7 +4,7 @@
 # Compilation command "pyinstaller --onefile countDown.py"
 #
 
-VERSION = "0.19"
+VERSION = "0.20"
 
 header = ("COUNTDOWN GAMEJAM - VERSION : " + VERSION)
 print(header)
@@ -65,6 +65,8 @@ tileImages = {
               ":" : "ladder",
               "{" : "bench-left",
               "}" : "bench-right",
+              "8" : "stairs-bottom-left",
+              "9" : "stairs-bottom-right",
               }
 font = pygame.font.Font(".\\assets\\MonospaceRegular-6ZWg.ttf", 40)#'Comic Sans MS', 40)
 fontBig = pygame.font.Font(".\\assets\\MonospaceRegular-6ZWg.ttf", 80)
@@ -89,6 +91,7 @@ tileSelX = 0
 tileSelY = 0
 tileSelDir = [0, 0]
 gameWon = False
+dead = False
 
 def DepthDictInsert (dictionary, path, item):
     subDict = dictionary
@@ -168,7 +171,6 @@ def LoadStructure (structureDefPath):
 def LoadGraphics ():
     global gfx
     gfx = LoadStructure("assets\\")
-    print("gfx = " + str(gfx))
     #input()
 
 def GetDisplaySize ():
@@ -274,7 +276,20 @@ def Draw (screenScaled, records):
             textBox.blit(buttonTip, (textBox.get_width() - buttonTip.get_width() - 80, textBox.get_height() - buttonTip.get_height() - 80))
             # Blit textbox onto screen
             display.blit(textBox, (((nativeDisplaySize[0] - textBox.get_width()) * 0.5), nativeDisplaySize[1] - textBox.get_height() - 20))
-        
+    # Dead
+    if dead:
+        textLine = font.render("You have passed on. Press space to undo or R to restart.", True, (0, 0, 0))#buttonTip = DrawText("You have passed on. Press space to undo.", (1900, 80))
+        buttonTip = pygame.Surface((textLine.get_width(), textLine.get_height()))
+        buttonTip.fill("#FFEEEE")
+        buttonTip.blit(textLine, (0, 0))
+        display.blit(buttonTip, (200, 500))
+    # Instructions
+    if levelNum == 0 and len(records) == 1 and (not showingText):
+        textLine = font.render("Use the Arrow keys to move.", True, (0, 0, 0))#buttonTip = DrawText("You have passed on. Press space to undo.", (1900, 80))
+        buttonTip = pygame.Surface((textLine.get_width(), textLine.get_height()))
+        buttonTip.fill("#EEEEFF")
+        buttonTip.blit(textLine, (0, 0))
+        display.blit(buttonTip, (600, 500))
     # Draw countdown
     if (not showingText) and levelNum != len(gfx["levels"]) - 1:
         movesRemaining = allowedMoves - (len(records) - 1)
@@ -346,6 +361,7 @@ def Tick (records):
     global tileSelDir
     global tileSelX, tileSelY
     global gameWon
+    global dead
     running = True
     cloudX += 1
     keys = pygame.key.get_pressed()
@@ -364,10 +380,12 @@ def Tick (records):
                 showingText = False
             else:
                 currentDialogue = dialogueQueue.pop(0)
+                pygame.mixer.Channel(0).play(gfx["audio"]["dialoguesound"], 0)
         if len(dialogueQueue) > 0:
             if not showingText:
                 showingText = True
                 currentDialogue = dialogueQueue.pop(0)
+                pygame.mixer.Channel(0).play(gfx["audio"]["dialoguesound"], 0)
 
     if debug:
         showingText = False
@@ -406,6 +424,7 @@ def Tick (records):
     if (not debug) and (not gameWon) and (not showingText):
         if (pressingInteract % moveWait) == 1 and len(records) > 1:
             records.pop(-1)
+            pygame.mixer.Channel(0).play(gfx["audio"]["pushsound"], 0)
     if debug:
         if keys[pygame.K_q]:
             print("LEVEL #" + str(levelNum) + " :")
@@ -460,6 +479,9 @@ def Tick (records):
                 print("TILE: " + str(records[-1][selZ][selY][selX]))
 
     # Update game state
+    dead = False
+    if len(records) > allowedMoves and (not gameWon) and (not showingText) and levelNum != len(gfx["levels"]) - 1:
+        dead = True
     move = False
     if moveDir[0] > 0 and (moveDir[0] % moveWait) == 1:
         move = True
@@ -539,6 +561,11 @@ def Tick (records):
                 # If player is out of moves, die
                 if len(records) > allowedMoves:
                     ForEachTile(records[-1], Die)
+                else:
+                    if allowedMoves - len(records) > 2:
+                        pygame.mixer.Channel(0).play(gfx["audio"]["heartbeat"], 0)
+                    else:
+                        pygame.mixer.Channel(0).play(gfx["audio"]["heartrate-monitor"], 0)
     return running
 
 def Win(level, x, y):
@@ -740,6 +767,8 @@ def MainLoop ():
     LoadGraphics()
     records, allowedMoves = GetCurrentLevel()
     PrepDialogue("start")
+    pygame.mixer.Channel(0).set_volume(2)
+    pygame.mixer.Channel(1).set_volume(0.5)
     pygame.mixer.Channel(1).play(gfx["audio"]["titletrack"], -1)
 ##    dialogueQueue.append("Hello there! Blahblahblahblah")
 ##    dialogueQueue.append("Have you ever been to the moon?\nI have.")
