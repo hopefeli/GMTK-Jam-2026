@@ -22,3 +22,5 @@ blank ~ TODIE: I...I just...
 blank ~ OLIVER: Hahaha! You don't need to worry so much Toads, I'm just glad to get to see you again.
 
 blank ~ TODIE: Thank you.
+
+blank ~ END: THE END``This game was created for the GMTK Game Jam 2026 with the theme of "COUNTDOWN".``Artwork, narrative & design - `    Shaelina C.``Additional artwork, sound, music & all the good ideas -`    Felicia Cappleman``Programming & puzzle design - `    Kenny Garstin``Thank you for your time and attention. 

@@ -33,11 +33,13 @@ blank ~ todie-sad-talking: With so little left, what is there to say to them?
 
 blank ~ todie-sad-talking: What would I...I...
 
+Polaroid ~ NULL: 
+
 blank ~ phone: ...
 
 blank ~ todie-sad: *sigh*.
 
-black ~ phone: *ring ring*!
+blank ~ phone: *ring ring*!
 
 blank ~ todie-desparate: FRIEND? Hey, I'm really sorry about being so absent, I-I need to-
 

@@ -4,7 +4,7 @@
 # Compilation command "pyinstaller --onefile countDown.py"
 #
 
-VERSION = "0.16"
+VERSION = "0.18"
 
 header = ("COUNTDOWN GAMEJAM - VERSION : " + VERSION)
 print(header)
@@ -63,9 +63,11 @@ tileImages = {
               "(" : "stairs-rail-left",
               ")" : "stairs-rail-right",
               ":" : "ladder",
+              "{" : "bench-left",
+              "}" : "bench-right",
               }
 font = pygame.font.Font(".\\assets\\MonospaceRegular-6ZWg.ttf", 40)#'Comic Sans MS', 40)
-fontBig = pygame.font.Font(".\\assets\\MonospaceRegular-6ZWg.ttf", 160)
+fontBig = pygame.font.Font(".\\assets\\MonospaceRegular-6ZWg.ttf", 80)
 showingText = False
 dialogueQueue = []
 currentDialogue = ""
@@ -74,7 +76,7 @@ alreadyMoved = False
 moveDir = [0, 0]
 records = []
 cloudX = 0
-stairs = ["=", "+", "[", "]", ":"]
+stairs = ["=", "+", "[", "]", ":", "{", "}"]
 standable = ["."] + stairs
 won = False
 levelNum = 0
@@ -86,6 +88,7 @@ selZ = 0
 tileSelX = 0
 tileSelY = 0
 tileSelDir = [0, 0]
+gameWon = False
 
 def DepthDictInsert (dictionary, path, item):
     subDict = dictionary
@@ -230,31 +233,60 @@ def Draw (screenScaled, records):
     # Selector
     if debug:
         display.blit(gfx["tiles"]["MC-sprite-dead"], (selX * tileSize, selY * tileSize))
+        
     # Draw textbox
     if showingText:
         # Draw background
         if currentDialogue[0] in gfx["illustrations"]:
             display.blit(gfx["illustrations"][currentDialogue[0]], (0, 0))
-        # Text
-        textBox = gfx["sprites"]["TextBox"].copy()
-        textSurface = DrawText(currentDialogue[2], (900, 600))
-        textBox.blit(textSurface, (540, 40))
-        # Add button tip
-        buttonTip = DrawText("Press space to continue...", (700, 80))
-        textBox.blit(buttonTip, (textBox.get_width() - buttonTip.get_width() - 80, textBox.get_height() - buttonTip.get_height() - 80))
-        # Add pfp
-        pfpName = currentDialogue[1]
-        if pfpName in gfx["cutsceneImages"]:
-            textBox.blit(gfx["cutsceneImages"][pfpName], (80, 80))
-        # Blit textbox onto screen
-        display.blit(textBox, (((nativeDisplaySize[0] - textBox.get_width()) * 0.5), textBox.get_height() - 200))
+        if currentDialogue[1] == "NULL":
+            # Add button tip
+            buttonTip = DrawText("Press space to continue...", (700, 80))
+            display.blit(buttonTip, (display.get_width() - buttonTip.get_width() - 80, display.get_height() - buttonTip.get_height() - 80))
+        elif currentDialogue[1] == "END":
+            # Text
+            #textBox = gfx["sprites"]["TextBox"].copy()
+            #textSurface = DrawText(currentDialogue[2], (1000, 1000))
+            display.fill("#FFFFBB")
+            text = currentDialogue[2]
+            lineHeight = 60
+            textSurface = pygame.Surface((1000, 1000), pygame.SRCALPHA)
+            for i in text:
+                lines = text.split("\n")
+            lineNum = 0
+            for line in lines:
+                textLine = font.render(line, True, (0, 0, 0))
+                textSurface.blit(textLine, (0, lineNum * lineHeight))
+                lineNum += 1
+            #textBox.blit(textSurface, (540, 40))
+            display.blit(textSurface, (400, 40))
+        else:
+            # Text
+            textBox = gfx["sprites"]["TextBox"].copy()
+            textSurface = DrawText(currentDialogue[2], (1000, 600))
+            textBox.blit(textSurface, (540, 40))
+            # Add pfp
+            pfpName = currentDialogue[1]
+            if pfpName in gfx["cutsceneImages"]:
+                textBox.blit(gfx["cutsceneImages"][pfpName], (80, 80))
+            # Add button tip
+            buttonTip = DrawText("Press space to continue...", (700, 80))
+            textBox.blit(buttonTip, (textBox.get_width() - buttonTip.get_width() - 80, textBox.get_height() - buttonTip.get_height() - 80))
+            # Blit textbox onto screen
+            display.blit(textBox, (((nativeDisplaySize[0] - textBox.get_width()) * 0.5), textBox.get_height() - 200))
+        
     # Draw countdown
-    if not showingText:
+    if (not showingText) and levelNum != len(gfx["levels"]) - 1:
         movesRemaining = allowedMoves - (len(records) - 1)
         moveText = str(movesRemaining) + "/" + str(allowedMoves)
         #counter = DrawText(str(movesRemaining), (80, 80))
         counter = fontBig.render(moveText, True, (0, 0, 255))
-        display.blit(counter, (((nativeDisplaySize[0]) * 0.5) - (counter.get_width() * 0.5), 100))
+        frameName = sorted(gfx["sprites"]["heart-ui"].keys())[int(cloudX * 0.5) % 16]
+        #print(frameName)
+        heart = gfx["sprites"]["heart-ui"][frameName].copy()#pygame.Surface((500, 500), pygame.SRCALPHA)
+        #heart.blit(gfx["sprites"]["heart-ui"][frameName], (0, 0))
+        heart.blit(counter, ((heart.get_width() - counter.get_width()) * 0.5, 180))
+        display.blit(heart, (20, -60))#(((nativeDisplaySize[0]) * 0.5) - (heart.get_width() * 0.5), -80))
     # Scale and flip the display
     pixelScale = 1
     if (screenScaled.get_width() / nativeDisplaySize[0]) < (screenScaled.get_height() / nativeDisplaySize[1]):
@@ -313,6 +345,7 @@ def Tick (records):
     global selX, selY, selZ
     global tileSelDir
     global tileSelX, tileSelY
+    global gameWon
     running = True
     cloudX += 1
     keys = pygame.key.get_pressed()
@@ -325,15 +358,16 @@ def Tick (records):
         pressingInteract = 0
 
     # Allow player to navigate dialogue
-    if pressingInteract == 1 and showingText:
-        if len(dialogueQueue) == 0:
-            showingText = False
-        else:
-            currentDialogue = dialogueQueue.pop(0)
-    if len(dialogueQueue) > 0:
-        if not showingText:
-            showingText = True
-            currentDialogue = dialogueQueue.pop(0)
+    if len(currentDialogue) == 0 or currentDialogue[1] != "END":
+        if pressingInteract == 1 and showingText:
+            if len(dialogueQueue) == 0:
+                showingText = False
+            else:
+                currentDialogue = dialogueQueue.pop(0)
+        if len(dialogueQueue) > 0:
+            if not showingText:
+                showingText = True
+                currentDialogue = dialogueQueue.pop(0)
 
     if debug:
         showingText = False
@@ -357,6 +391,10 @@ def Tick (records):
         moveDir[1] += 1
     else:
         moveDir = [0, 0]
+    # Reset level
+    if keys[pygame.K_r]:
+        while len(records) > 1:
+            records.pop()
     # Debug
     if keys[pygame.K_LSHIFT] and keys[pygame.K_p]:
         debug = True
@@ -365,7 +403,7 @@ def Tick (records):
         debug = False
         print("DEBUG OFF")
     # Play undoing
-    if not debug:
+    if (not debug) and (not gameWon) and (not showingText):
         if (pressingInteract % moveWait) == 1 and len(records) > 1:
             records.pop(-1)
     if debug:
@@ -431,7 +469,7 @@ def Tick (records):
         move = True
     if moveDir[1] < 0 and (-moveDir[1] % moveWait) == 1:
         move = True
-    if move:
+    if move and (not gameWon) and (not showingText):
         if debug:
             # DEBUG MODE
             
@@ -492,15 +530,26 @@ def Tick (records):
             # If nothing has changed, delete newest record
             if len(records) > 1 and records[-1] == records[-2]:
                 records.pop(-1)
-            # If player is out of moves, die
-            if len(records) > allowedMoves:
-                ForEachTile(records[-1], Die)
+            # Winning the whole game
+            if levelNum == len(gfx["levels"]) - 1:
+                ForEachTile(records[-1], GameWin)
+                if gameWon:
+                    PrepDialogue("end")
+            else:
+                # If player is out of moves, die
+                if len(records) > allowedMoves:
+                    ForEachTile(records[-1], Die)
     return running
 
 def Win(level, x, y):
     global won
     if x == 14 and level[0][y][x] == "@":
         won = True
+
+def GameWin(level, x, y):
+    global gameWon
+    if x == 12 and level[0][y][x] == "@":
+        gameWon = True
 
 def Die(level, x, y):
     if level[0][y][x] == "@":
@@ -677,8 +726,8 @@ def PrepDialogue (fileName):
     lines = dialogue.split("\n")
     for line in lines:
         if line.split() != []:
-            blank = "".join(line.split("-")[0].split())
-            pfp, text = line.split("-")[1].split(":")
+            blank = "".join(line.split("~")[0].split())
+            pfp, text = line.split("~")[1].split(":")
             pfp = "".join(pfp.split())
             cleanText = FormatChunk(text, 40)
             dialogueQueue.append([blank, pfp, cleanText])

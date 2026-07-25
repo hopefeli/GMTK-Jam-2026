@@ -1,5 +1,6 @@
 dialogue
 	start.txt
+	end.txt
 tiles
 	box.bmp
 	building-blue-left.png
@@ -47,11 +48,30 @@ tiles
 	stairs-rail-right.png
 	stairs-rail.png
 	ladder.png
+	bench-left.png
+	bench-right.png
 sprites
 	TextBox.png
 	bus-stop-sign.png
 	bus-stop.png
 	bg-cloudy.png
+	heart-ui
+		000.png
+		001.png
+		002.png
+		003.png
+		004.png
+		005.png
+		006.png
+		007.png
+		008.png
+		009.png
+		010.png
+		011.png
+		012.png
+		013.png
+		014.png
+		015.png
 levels
 	level0.txt
 	level1.txt
@@ -59,11 +79,22 @@ levels
 	level3.txt
 	level4.txt
 	level5.txt
+	level6.txt
 cutsceneImages
 	MC.png
 	DOCTOR.png
+	doctor-clip.png
+	doctor-glasses.png
+	phone.png
+	todie-desparate.png
+	todie-neutral-talking.png
+	todie-neutral.png
+	todie-sad-talking.png
+	todie-sad.png
+	todie-shocked.png
 illustrations
 	none.bmp
 	blank.bmp
+	Polaroid.png
 audio
 	titletrack.wav
