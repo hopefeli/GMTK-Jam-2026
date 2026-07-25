@@ -4,7 +4,7 @@
 # Compilation command "pyinstaller --onefile countDown.py"
 #
 
-VERSION = "0.18"
+VERSION = "0.19"
 
 header = ("COUNTDOWN GAMEJAM - VERSION : " + VERSION)
 print(header)
@@ -268,12 +268,12 @@ def Draw (screenScaled, records):
             # Add pfp
             pfpName = currentDialogue[1]
             if pfpName in gfx["cutsceneImages"]:
-                textBox.blit(gfx["cutsceneImages"][pfpName], (80, 80))
+                textBox.blit(gfx["cutsceneImages"][pfpName], (75, 60))
             # Add button tip
             buttonTip = DrawText("Press space to continue...", (700, 80))
             textBox.blit(buttonTip, (textBox.get_width() - buttonTip.get_width() - 80, textBox.get_height() - buttonTip.get_height() - 80))
             # Blit textbox onto screen
-            display.blit(textBox, (((nativeDisplaySize[0] - textBox.get_width()) * 0.5), textBox.get_height() - 200))
+            display.blit(textBox, (((nativeDisplaySize[0] - textBox.get_width()) * 0.5), nativeDisplaySize[1] - textBox.get_height() - 20))
         
     # Draw countdown
     if (not showingText) and levelNum != len(gfx["levels"]) - 1:
