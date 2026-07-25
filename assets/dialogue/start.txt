@@ -35,20 +35,20 @@ blank ~ todie-sad-talking: What would I...I...
 
 Polaroid ~ NULL: 
 
-blank ~ phone: ...
+Polaroid ~ phone: ...
 
-blank ~ todie-sad: *sigh*.
+Polaroid ~ todie-sad: *sigh*.
 
-blank ~ phone: *ring ring*!
+Polaroid ~ phone: *ring ring*!
 
-blank ~ todie-desparate: Oliver? Hey, I'm really sorry about being so absent, I-I need to-
+Polaroid ~ todie-desparate: Oliver? Hey, I'm really sorry about being so absent, I-I need to-
 
-blank ~ phone: HELLO! Just a friendly reminder from your local clinic! You only have 6 hours left to live!
+Polaroid ~ phone: HELLO! Just a friendly reminder from your local clinic! You only have 6 hours left to live!
 
-blank ~ phone: If you have any remaining regrets important items on your bucket list, now's the time to get, get, get to it!
+Polaroid ~ phone: If you have any remaining regrets important items on your bucket list, now's the time to get, get, get to it!
 
-blank ~ todie-shocked: ...!
+Polaroid ~ todie-shocked: ...!
 
 blank ~ todie-sad-talking: No time left, huh.
 
-empty ~ todie-neutral-talking: Guess I gotta take the long way around.
+blank ~ todie-neutral-talking: Guess I gotta take the long way around.

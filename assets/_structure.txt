@@ -96,6 +96,8 @@ illustrations
 	none.bmp
 	blank.bmp
 	Polaroid.png
+	reunion-bg.png
+	reunion-end.png
 audio
 	dialoguesound.wav
 	heartbeat.wav

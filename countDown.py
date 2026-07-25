@@ -4,7 +4,7 @@
 # Compilation command "pyinstaller --onefile countDown.py"
 #
 
-VERSION = "0.20"
+VERSION = "0.24"
 
 header = ("COUNTDOWN GAMEJAM - VERSION : " + VERSION)
 print(header)
@@ -48,6 +48,9 @@ tileImages = {
               "D" : "buliding-teal-top-right",
               "E" : "buliding-teal-top",
               "F" : "buliding-teal",
+              "G" : "platform-stairs-left",
+              "H" : "platform-stairs",
+              "I" : "platform-stairs-right",
               "0" : "floor-concrete-corner-2",
               "1" : "floor-concrete-corner-divide",
               "2" : "floor-concrete-divide-top",
@@ -193,7 +196,7 @@ def DrawText (text, size):
         lines = text.split("\n")
     lineNum = 0
     for line in lines:
-        textLine = font.render(line, True, (0, 0, 255))
+        textLine = font.render(line, True, (0, 0, 127))
         textSurface.blit(textLine, (0, lineNum * lineHeight))
         lineNum += 1
     return textSurface
@@ -243,7 +246,12 @@ def Draw (screenScaled, records):
             display.blit(gfx["illustrations"][currentDialogue[0]], (0, 0))
         if currentDialogue[1] == "NULL":
             # Add button tip
-            buttonTip = DrawText("Press space to continue...", (700, 80))
+            #buttonTip = DrawText("Press space to continue...", (700, 80))
+            textLine = font.render("Press space to continue...", True, (0, 0, 0))#buttonTip = DrawText("You have passed on. Press space to undo.", (1900, 80))
+            buttonTip = pygame.Surface((textLine.get_width(), textLine.get_height()))
+            buttonTip.fill("#DDDDCC")
+            buttonTip.blit(textLine, (0, 0))
+            #display.blit(buttonTip, (200, 500))
             display.blit(buttonTip, (display.get_width() - buttonTip.get_width() - 80, display.get_height() - buttonTip.get_height() - 80))
         elif currentDialogue[1] == "END":
             # Text
@@ -295,7 +303,7 @@ def Draw (screenScaled, records):
         movesRemaining = allowedMoves - (len(records) - 1)
         moveText = str(movesRemaining) + "/" + str(allowedMoves)
         #counter = DrawText(str(movesRemaining), (80, 80))
-        counter = fontBig.render(moveText, True, (0, 0, 255))
+        counter = fontBig.render(moveText, True, (255, 255, 255))
         frameName = sorted(gfx["sprites"]["heart-ui"].keys())[int(cloudX * 0.5) % 16]
         #print(frameName)
         heart = gfx["sprites"]["heart-ui"][frameName].copy()#pygame.Surface((500, 500), pygame.SRCALPHA)

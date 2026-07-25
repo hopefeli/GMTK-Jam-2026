@@ -13,14 +13,16 @@ blank ~ OLIVER: A-are you okay? You look like you were running! If you're in a h
 
 blank ~ TODIE: Ugh...
 
-blank ~ TODIE: I'm fine, it's gonna be fine.
+reunion-bg ~ NULL: 
 
-blank ~ TODIE: I'm sorry I've been so absent. I just got so busy, a-and I didn't know if I should reach out.
+reunion-bg ~ TODIE: I'm fine, it's gonna be fine.
 
-blank ~ TODIE: I...I just...
+reunion-bg ~ TODIE: I'm sorry I've been so absent. I just got so busy, a-and I didn't know if I should reach out.
 
-blank ~ OLIVER: Hahaha! You don't need to worry so much Toads, I'm just glad to get to see you again.
+reunion-bg ~ TODIE: I...I just...
 
-blank ~ TODIE: Thank you.
+reunion-end ~ OLIVER: Hahaha! You don't need to worry so much Toads, I'm just glad to get to see you again.
 
-blank ~ END:    THE END`This game was created for the GMTK Game Jam 2026 with the theme of "COUNTDOWN".``Artwork, narrative & design - `    Shaelina C.``Additional art, sound and design`& all the good ideas -`    Felicia Cappleman``Programming & puzzle design - `    Kenny Garstin``Thank you for your time and attention. 
+reunion-end ~ TODIE: Thank you.
+
+reunion-end ~ END:    THE END`This game was created for the GMTK Game Jam 2026 with the theme of "COUNTDOWN".``Artwork, narrative & design - `    Shaelina C.``Additional art, sound and design`& all the good ideas -`    Felicia Cappleman``Programming & puzzle design - `    Kenny Garstin``Thank you for your time and attention. 
