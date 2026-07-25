@@ -1,18 +1,7 @@
 dialogue
 	start.txt
 tiles
-	floor0.bmp
-	empty.bmp
-	MC-sprite-stand.png
-	crate-wooden.png
-	floor-concrete-corner-2.png
-	floor-concrete-corner-divide.png
-	floor-concrete-divide-top.png
-	floor-concrete-divide.png
-	floor-concrete-left.png
-	floor-concrete-right.png
-	floor-concrete-top-1.png
-	floor-concrete-top-2.png
+	box.bmp
 	building-blue-left.png
 	building-blue-right.png
 	building-blue-variant-1.png
@@ -24,18 +13,57 @@ tiles
 	building-entry-right.png
 	building-window-1.png
 	building-window-2.png
+	buliding-teal-left.png
+	buliding-teal-right.png
+	buliding-teal-top-left.png
+	buliding-teal-top-right.png
+	buliding-teal-top.png
+	buliding-teal.png
+	crate-wooden.png
+	empty.bmp
+	floor-concrete-corner-2.png
+	floor-concrete-corner-divide.png
+	floor-concrete-divide-top.png
+	floor-concrete-divide.png
+	floor-concrete-left.png
+	floor-concrete-right.png
+	floor-concrete-top-1.png
+	floor-concrete-top-2.png
+	floor-concrete.png
+	floor0.bmp
+	MC-sprite-dead.png
+	MC-sprite-stand.png
+	platform-stairs-left.png
+	platform-stairs-right.png
+	platform-stairs.png
+	stairs-bottom-left.png
+	stairs-bottom-right.png
+	stairs-building-left.png
+	stairs-building-right.png
+	stairs-concrete-left.png
+	stairs-concrete-right.png
 	stairs-concrete.png
+	stairs-rail-left.png
+	stairs-rail-right.png
+	stairs-rail.png
+	ladder.png
 sprites
 	TextBox.png
+	bus-stop-sign.png
+	bus-stop.png
 	bg-cloudy.png
 levels
 	level0.txt
 	level1.txt
 	level2.txt
 	level3.txt
+	level4.txt
+	level5.txt
 cutsceneImages
 	MC.png
 	DOCTOR.png
 illustrations
 	none.bmp
 	blank.bmp
+audio
+	titletrack.wav
