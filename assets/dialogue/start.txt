@@ -1,50 +1,52 @@
 
-blank ~ DOCTOR: MC, we're deeply sorry about your current situation. I know how sudden this must be for you. 
+blank ~ doctor-clip: MC, we're deeply sorry about your current situation. I know how sudden this must be for you. 
 
-blank ~ DOCTOR: We've got the results back, and although your physical condition is perfectly fine, your cardiovascular system is at high risk. 
+blank ~ doctor-clip: We've got the results back, and although your physical condition is perfectly fine, your cardiovascular system is at high risk. 
 
-blank ~ MC: ...
+blank ~ todie-sad: ...
 
-blank ~ DOCTOR: Let's see...we've examined your treatment options, but there aren't any that we believe can confidently treat your condition. 
+blank ~ doctor-clip: Let's see...we've examined your treatment options, but there aren't any that we believe can confidently treat your condition. 
 
-blank ~ DOCTOR: You don't have much longer to live. Our estimate is that you have less than 24 hours.
+blank ~ doctor-clip: You don't have much longer to live. Our estimate is that you have less than 24 hours.
 
-blank ~ MC: ...
+blank ~ todie-sad: ...
 
-blank ~ MC: It's...fine...
+blank ~ todie-sad-talking: It's...fine...
 
-blank ~ DOCTOR: I know that that's a lot to take in.
+blank ~ doctor-clip: I know that that's a lot to take in.
 
-blank ~ MC: No, no. Really it's...fine.
+blank ~ todie-neutral-talking: No, no. Really it's...fine.
 
-blank ~ DOCTOR: Are you sure about that?
+blank ~ doctor-glasses: Are you sure about that?
 
-blank ~ SHOCKED: Oh! Uh...
+blank ~ todie-shocked: Oh! Uh...
 
-blank ~ MC: Sorry. I guess it's just a bad habit.
+blank ~ todie-sad-talking: Sorry. I guess it's just a bad habit.
 
-blank ~ DOCTOR: Well, you're all good to go MC, but...I'd recommend you talk to your loved ones about about this issue immediately.
+blank ~ doctor-clip: Well, you're all good to go MC, but...I'd recommend you talk to your loved ones about about this issue immediately.
 
-blank ~ DOCTOR: ...Especially considering the urgency of this matter.
+blank ~ doctor-glasses: ...Especially considering the urgency of this matter.
 
-blank ~ MC: My loved ones?
+blank ~ todie-neutral-talking: My loved ones?
 
-blank ~ MC: With so little left, what is there to say to them?
+blank ~ todie-sad-talking: With so little left, what is there to say to them?
 
-blank ~ MC: What would I...I...
+blank ~ todie-sad-talking: What would I...I...
 
-Polaroid ~ NULL: 
+blank ~ phone: ...
 
-blank ~ DIAL: The MC tries to dial a number on the phone but it goes unanswered.
+blank ~ todie-sad: *sigh*.
 
-blank ~ SIGH: MC sighs and is about to leave when the phone rings again. MC scrambles to pick up the phone. 
+black ~ phone: *ring ring*!
 
-blank ~ MC: FRIEND? Hey, I'm really sorry about being so absent, I-I need to-
+blank ~ todie-desparate: FRIEND? Hey, I'm really sorry about being so absent, I-I need to-
 
-blank ~ PHONE: HELLO! Just a friendly reminder from your local clinic! You only have 6 hours left to live!
+blank ~ phone: HELLO! Just a friendly reminder from your local clinic! You only have 6 hours left to live!
 
-blank ~ PHONE: If you have any remaining regrets important items on your bucket list, now's the time to get, get, get to it!
+blank ~ phone: If you have any remaining regrets important items on your bucket list, now's the time to get, get, get to it!
 
-blank ~ GRIM: MC grimaces.
+blank ~ todie-shocked: ...!
 
-empty ~ MC: No time left, huh. Guess I gotta do this the hard way.
+blank ~ todie-sad-talking: No time left, huh.
+
+empty ~ todie-neutral-talking: Guess I gotta take the long way around.
