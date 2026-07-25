@@ -1,5 +1,5 @@
 
-blank ~ TODIE: gasping for breath
+blank ~ TODIE: *wheeze*...*cough*!
 
 blank ~ TODIE: Hello? Oliver?
 
@@ -9,13 +9,13 @@ blank ~ OLIVER: Huh? Todie?
 
 blank ~ OLIVER: It's been so long! I thought you were working in the city!
 
-blank ~ OLIVER: A-are you okay? You look winded, you didn't need to push yourself so hard to get here...
+blank ~ OLIVER: A-are you okay? You look like you were running! If you're in a hurry, you don't have to stay...
 
 blank ~ TODIE: Ugh...
 
 blank ~ TODIE: I'm fine, it's gonna be fine.
 
-blank ~ TODIE: I'm sorry I've been so absent. I just got so busy, and then I didn't know if I should reach out.
+blank ~ TODIE: I'm sorry I've been so absent. I just got so busy, a-and I didn't know if I should reach out.
 
 blank ~ TODIE: I...I just...
 
