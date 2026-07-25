@@ -1,54 +1,54 @@
 
-blank ~ doctor-clip: Todie, we're deeply sorry about your current situation. I know how sudden this must be for you. 
+blank ~ dialoguesound ~ 118340__julien_matthey__jm_noiz_buzz-01-neon-light ~ doctor-clip: Todie, we're deeply sorry about your current situation. I know how sudden this must be for you. 
 
-blank ~ doctor-clip: We've got the results back, and although your physical condition is perfectly fine, your cardiovascular system is at high risk. 
+blank ~ dialoguesound ~ ~ doctor-clip: We've got the results back, and although your physical condition is perfectly fine, your cardiovascular system is at high risk. 
 
-blank ~ todie-sad: ...
+blank ~ dialoguesound ~ ~ todie-sad: ...
 
-blank ~ doctor-clip: Let's see...we've examined your treatment options, but there aren't any that we believe can confidently treat your condition. 
+blank ~ dialoguesound ~ ~ doctor-clip: Let's see...we've examined your treatment options, but there aren't any that we believe can confidently treat your condition. 
 
-blank ~ doctor-clip: You don't have much longer to live. Our estimate is that you have less than 24 hours.
+blank ~ dialoguesound ~ ~ doctor-clip: You don't have much longer to live. Our estimate is that you have less than 24 hours.
 
-blank ~ todie-sad: ...
+blank ~ dialoguesound ~ ~ todie-sad: ...
 
-blank ~ todie-sad-talking: It's...fine...
+blank ~ dialoguesound ~ ~ todie-sad-talking: It's...fine...
 
-blank ~ doctor-clip: I know that that's a lot to take in.
+blank ~ dialoguesound ~ ~ doctor-clip: I know that that's a lot to take in.
 
-blank ~ todie-neutral-talking: No, no. Really it's...fine.
+blank ~ dialoguesound ~ ~ todie-neutral-talking: No, no. Really it's...fine.
 
-blank ~ doctor-glasses: Are you sure about that?
+blank ~ dialoguesound ~ ~ doctor-glasses: Are you sure about that?
 
-blank ~ todie-shocked: Oh! Uh...
+blank ~ dialoguesound ~ ~ todie-shocked: Oh! Uh...
 
-blank ~ todie-sad-talking: Sorry. I guess it's just a bad habit.
+blank ~ dialoguesound ~ ~ todie-sad-talking: Sorry. I guess it's just a bad habit.
 
-blank ~ doctor-clip: Well, you're all good to go Todie, but...I'd recommend you talk to your loved ones about about this issue immediately.
+blank ~ dialoguesound ~ ~ doctor-clip: Well, you're all good to go Todie, but...I'd recommend you talk to your loved ones about about this issue immediately.
 
-blank ~ doctor-glasses: ...Especially considering the urgency of this matter.
+blank ~ dialoguesound ~ ~ doctor-glasses: ...Especially considering the urgency of this matter.
 
-blank ~ todie-neutral-talking: My loved ones?
+blank ~ dialoguesound ~ ~ todie-neutral-talking: My loved ones?
 
-blank ~ todie-sad-talking: With so little left, what is there to say to them?
+blank ~ dialoguesound ~ ~ todie-sad-talking: With so little left, what is there to say to them?
 
-blank ~ todie-sad-talking: What would I...I...
+blank ~ dialoguesound ~ ~ todie-sad-talking: What would I...I...
 
-Polaroid ~ NULL: 
+Polaroid ~ dialoguesound ~ titletrack ~ NULL: 
 
-Polaroid ~ phone: ...
+Polaroid ~ 728917__tomaszbuga__telephone_dialing_1 ~ ~ phone: ...
 
-Polaroid ~ todie-sad: *sigh*.
+Polaroid ~ dialoguesound ~ ~ todie-sad: *sigh*.
 
-Polaroid ~ phone: *ring ring*!
+Polaroid ~ 245445__blukotek__old-phone-ringtone-poland ~ ~ phone: *ring ring*!
 
-Polaroid ~ todie-desparate: Oliver? Hey, I'm really sorry about being so absent, I-I need to-
+Polaroid ~ dialoguesound ~ ~ todie-desparate: Oliver? Hey, I'm really sorry about being so absent, I-I need to-
 
-Polaroid ~ phone: HELLO! Just a friendly reminder from your local clinic! You only have 6 hours left to live!
+Polaroid ~ dialoguesound ~ ~ phone: HELLO! Just a friendly reminder from your local clinic! You only have 6 hours left to live!
 
-Polaroid ~ phone: If you have any remaining regrets important items on your bucket list, now's the time to get, get, get to it!
+Polaroid ~ dialoguesound ~ ~ phone: If you have any remaining regrets important items on your bucket list, now's the time to get, get, get to it!
 
-Polaroid ~ todie-shocked: ...!
+Polaroid ~ dialoguesound ~ ~ todie-shocked: ...!
 
-blank ~ todie-sad-talking: No time left, huh.
+blank ~ dialoguesound ~ ~ todie-sad-talking: No time left, huh.
 
-blank ~ todie-neutral-talking: Guess I gotta take the long way around.
+blank ~ dialoguesound ~ ~ todie-neutral-talking: Guess I gotta take the long way around.

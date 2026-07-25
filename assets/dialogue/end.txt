@@ -1,28 +1,28 @@
 
-blank ~ TODIE: *wheeze*...*cough*!
+blank ~ ~ ~ TODIE: *wheeze*...*cough*!
 
-blank ~ TODIE: Hello? Oliver?
+blank ~ ~ ~ TODIE: Hello? Oliver?
 
-blank ~ OLIVER: Hello?
+blank ~ ~ ~ OLIVER: Hello?
 
-blank ~ OLIVER: Huh? Todie?
+blank ~ ~ ~ OLIVER: Huh? Todie?
 
-blank ~ OLIVER: It's been so long! I thought you were working in the city!
+blank ~ ~ ~ OLIVER: It's been so long! I thought you were working in the city!
 
-blank ~ OLIVER: A-are you okay? You look like you were running! If you're in a hurry, you don't have to stay...
+blank ~ ~ ~ OLIVER: A-are you okay? You look like you were running! If you're in a hurry, you don't have to stay...
 
-blank ~ TODIE: Ugh...
+blank ~ ~ ~ TODIE: Ugh...
 
-reunion-bg ~ NULL: 
+reunion-bg ~ ~ ~ NULL: 
 
-reunion-bg ~ TODIE: I'm fine, it's gonna be fine.
+reunion-bg ~ ~ ~ TODIE: I'm fine, it's gonna be fine.
 
-reunion-bg ~ TODIE: I'm sorry I've been so absent. I just got so busy, a-and I didn't know if I should reach out.
+reunion-bg ~ ~ ~ TODIE: I'm sorry I've been so absent. I just got so busy, a-and I didn't know if I should reach out.
 
-reunion-bg ~ TODIE: I...I just...
+reunion-bg ~ ~ ~ TODIE: I...I just...
 
-reunion-end ~ OLIVER: Hahaha! You don't need to worry so much Toads, I'm just glad to get to see you again.
+reunion-end ~ ~ ~ OLIVER: Hahaha! You don't need to worry so much Toads, I'm just glad to get to see you again.
 
-reunion-end ~ TODIE: Thank you.
+reunion-end ~ ~ ~ TODIE: Thank you.
 
-reunion-end ~ END:    THE END`This game was created for the GMTK Game Jam 2026 with the theme of "COUNTDOWN".``Artwork, narrative & design - `    Shaelina C.``Additional art, sound and design`& all the good ideas -`    Felicia Cappleman``Programming & puzzle design - `    Kenny Garstin``Thank you for your time and attention. 
+reunion-end ~ ~ ~ END:    THE END`This game was created for the GMTK Game Jam 2026 with the theme of "COUNTDOWN".``Artwork, narrative & design - `    Shaelina C.``Additional art, sound and design`& all the good ideas -`    Felicia Cappleman``Programming & puzzle design - `    Kenny Garstin``Thank you for your time and attention. 

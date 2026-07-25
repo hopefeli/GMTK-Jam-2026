@@ -72,6 +72,23 @@ sprites
 		013.png
 		014.png
 		015.png
+	heart-ui-low
+		000.png
+		001.png
+		002.png
+		003.png
+		004.png
+		005.png
+		006.png
+		007.png
+		008.png
+		009.png
+		010.png
+		011.png
+		012.png
+		013.png
+		014.png
+		015.png
 levels
 	level0.txt
 	level1.txt
@@ -99,8 +116,15 @@ illustrations
 	reunion-bg.png
 	reunion-end.png
 audio
+	00871_SFX_DoorKnockWoodDoor.wav
+	118340__julien_matthey__jm_noiz_buzz-01-neon-light.wav
+	245445__blukotek__old-phone-ringtone-poland.wav
+	728917__tomaszbuga__telephone_dialing_1.wav
+	bus.wav
 	dialoguesound.wav
+	footsteps.wav
 	heartbeat.wav
 	heartrate-monitor.wav
+	openDoor.wav
 	pushsound.wav
 	titletrack.wav

@@ -4,7 +4,7 @@
 # Compilation command "pyinstaller --onefile countDown.py"
 #
 
-VERSION = "0.24"
+VERSION = "0.26"
 
 header = ("COUNTDOWN GAMEJAM - VERSION : " + VERSION)
 print(header)
@@ -95,6 +95,10 @@ tileSelY = 0
 tileSelDir = [0, 0]
 gameWon = False
 dead = False
+MOVE_WARNING = 3
+currentMus = ""
+fadeOut = 0
+pressingNumber = 0
 
 def DepthDictInsert (dictionary, path, item):
     subDict = dictionary
@@ -244,7 +248,7 @@ def Draw (screenScaled, records):
         # Draw background
         if currentDialogue[0] in gfx["illustrations"]:
             display.blit(gfx["illustrations"][currentDialogue[0]], (0, 0))
-        if currentDialogue[1] == "NULL":
+        if currentDialogue[3] == "NULL":
             # Add button tip
             #buttonTip = DrawText("Press space to continue...", (700, 80))
             textLine = font.render("Press space to continue...", True, (0, 0, 0))#buttonTip = DrawText("You have passed on. Press space to undo.", (1900, 80))
@@ -253,12 +257,10 @@ def Draw (screenScaled, records):
             buttonTip.blit(textLine, (0, 0))
             #display.blit(buttonTip, (200, 500))
             display.blit(buttonTip, (display.get_width() - buttonTip.get_width() - 80, display.get_height() - buttonTip.get_height() - 80))
-        elif currentDialogue[1] == "END":
+        elif currentDialogue[3] == "END":
             # Text
-            #textBox = gfx["sprites"]["TextBox"].copy()
-            #textSurface = DrawText(currentDialogue[2], (1000, 1000))
             display.fill("#FFFFBB")
-            text = currentDialogue[2]
+            text = currentDialogue[4]
             lineHeight = 60
             textSurface = pygame.Surface((1000, 1000), pygame.SRCALPHA)
             for i in text:
@@ -273,10 +275,10 @@ def Draw (screenScaled, records):
         else:
             # Text
             textBox = gfx["sprites"]["TextBox"].copy()
-            textSurface = DrawText(currentDialogue[2], (1000, 600))
+            textSurface = DrawText(currentDialogue[4], (1000, 600))
             textBox.blit(textSurface, (540, 40))
             # Add pfp
-            pfpName = currentDialogue[1]
+            pfpName = currentDialogue[3]
             if pfpName in gfx["cutsceneImages"]:
                 textBox.blit(gfx["cutsceneImages"][pfpName], (75, 60))
             # Add button tip
@@ -304,12 +306,22 @@ def Draw (screenScaled, records):
         moveText = str(movesRemaining) + "/" + str(allowedMoves)
         #counter = DrawText(str(movesRemaining), (80, 80))
         counter = fontBig.render(moveText, True, (255, 255, 255))
-        frameName = sorted(gfx["sprites"]["heart-ui"].keys())[int(cloudX * 0.5) % 16]
+        if allowedMoves - len(records) >= MOVE_WARNING:
+            uiName = "heart-ui"
+        else:
+            uiName = "heart-ui-low"
+        frameName = sorted(gfx["sprites"][uiName].keys())[int(cloudX * 0.5) % 16]
         #print(frameName)
-        heart = gfx["sprites"]["heart-ui"][frameName].copy()#pygame.Surface((500, 500), pygame.SRCALPHA)
+        heart = gfx["sprites"][uiName][frameName].copy()#pygame.Surface((500, 500), pygame.SRCALPHA)
         #heart.blit(gfx["sprites"]["heart-ui"][frameName], (0, 0))
         heart.blit(counter, ((heart.get_width() - counter.get_width()) * 0.5, 180))
         display.blit(heart, (20, -60))#(((nativeDisplaySize[0]) * 0.5) - (heart.get_width() * 0.5), -80))
+    # Draw end screen fading
+    if fadeOut > 0:
+        black = pygame.Surface(nativeDisplaySize)
+        black.fill("#000000")
+        black.set_alpha(int(min(100, fadeOut) * float(255 / 100)))
+        display.blit(black, (0, 0))
     # Scale and flip the display
     pixelScale = 1
     if (screenScaled.get_width() / nativeDisplaySize[0]) < (screenScaled.get_height() / nativeDisplaySize[1]):
@@ -353,6 +365,19 @@ def ForEachTile (level, tileFunc):
         for x in range(0, len(level[0][y])):
             tileFunc(level, x, y)
 
+def UpdateDialogue ():
+    global dialogueQueue
+    global currentDialogue
+    global currentMus
+    currentDialogue = dialogueQueue.pop(0)
+    if currentDialogue[1] != "":
+        #pygame.mixer.Channel(0).play(gfx["audio"]["dialoguesound"], 0)
+        pygame.mixer.Channel(0).play(gfx["audio"][currentDialogue[1]], 0)
+    if currentDialogue[2] != "":
+        if currentDialogue[2] != currentMus:
+            currentMus = currentDialogue[2]
+            pygame.mixer.Channel(1).play(gfx["audio"][currentMus], -1)
+
 def Tick (records):
     global dialogueQueue
     global currentDialogue
@@ -369,6 +394,8 @@ def Tick (records):
     global tileSelDir
     global tileSelX, tileSelY
     global gameWon
+    global fadeOut
+    global pressingNumber
     global dead
     running = True
     cloudX += 1
@@ -382,19 +409,16 @@ def Tick (records):
         pressingInteract = 0
 
     # Allow player to navigate dialogue
-    if len(currentDialogue) == 0 or currentDialogue[1] != "END":
+    if len(currentDialogue) == 0 or currentDialogue[3] != "END":
         if pressingInteract == 1 and showingText:
             if len(dialogueQueue) == 0:
                 showingText = False
             else:
-                currentDialogue = dialogueQueue.pop(0)
-                pygame.mixer.Channel(0).play(gfx["audio"]["dialoguesound"], 0)
+                UpdateDialogue()
         if len(dialogueQueue) > 0:
             if not showingText:
                 showingText = True
-                currentDialogue = dialogueQueue.pop(0)
-                pygame.mixer.Channel(0).play(gfx["audio"]["dialoguesound"], 0)
-
+                UpdateDialogue()
     if debug:
         showingText = False
         dialogueQueue = []
@@ -444,6 +468,18 @@ def Tick (records):
                     for x in range(0, len(records[-1][i][y])):
                         text += records[-1][i][y][x]
             print(text)
+        if keys[pygame.K_0]:
+            if pressingNumber == 0:
+                levelNum += 1
+                records[:], allowedMoves = GetCurrentLevel()
+            pressingNumber += 1
+        elif keys[pygame.K_9]:
+            if pressingNumber == 0:
+                levelNum -= 1
+                records[:], allowedMoves = GetCurrentLevel()
+            pressingNumber += 1
+        else:
+            pressingNumber = 0
         if keys[pygame.K_1]:
             selZ = 0
             print("Z = 0")
@@ -564,16 +600,31 @@ def Tick (records):
             if levelNum == len(gfx["levels"]) - 1:
                 ForEachTile(records[-1], GameWin)
                 if gameWon:
-                    PrepDialogue("end")
+                    fadeOut = 1
             else:
                 # If player is out of moves, die
                 if len(records) > allowedMoves:
                     ForEachTile(records[-1], Die)
                 else:
-                    if allowedMoves - len(records) > 2:
+                    if allowedMoves - len(records) >= MOVE_WARNING:
                         pygame.mixer.Channel(0).play(gfx["audio"]["heartbeat"], 0)
                     else:
                         pygame.mixer.Channel(0).play(gfx["audio"]["heartrate-monitor"], 0)
+    if fadeOut > 0:
+        fadeOut += 1
+    if gameWon and fadeOut == 400:
+        PrepDialogue("end")
+    if fadeOut == 401:
+        fadeOut = 0
+    # Ending sound effects:
+    if fadeOut == 10:
+        pygame.mixer.Channel(0).play(gfx["audio"]["bus"], 0)
+    if fadeOut == 200:
+        pygame.mixer.Channel(0).play(gfx["audio"]["footsteps"], 0)
+    if fadeOut == 270:
+        pygame.mixer.Channel(0).play(gfx["audio"]["00871_SFX_DoorKnockWoodDoor"], 0)
+    if fadeOut == 350:
+        pygame.mixer.Channel(0).play(gfx["audio"]["openDoor"], 0)
     return running
 
 def Win(level, x, y):
@@ -761,11 +812,13 @@ def PrepDialogue (fileName):
     lines = dialogue.split("\n")
     for line in lines:
         if line.split() != []:
-            blank = "".join(line.split("~")[0].split())
-            pfp, text = line.split("~")[1].split(":")
+            back = "".join(line.split("~")[0].split())
+            sfx = "".join(line.split("~")[1].split())
+            music = "".join(line.split("~")[2].split())
+            pfp, text = line.split("~")[3].split(":")
             pfp = "".join(pfp.split())
             cleanText = FormatChunk(text, 40)
-            dialogueQueue.append([blank, pfp, cleanText])
+            dialogueQueue.append([back, sfx, music, pfp, cleanText])
 
 def MainLoop ():
     global allowedMoves
@@ -777,16 +830,16 @@ def MainLoop ():
     PrepDialogue("start")
     pygame.mixer.Channel(0).set_volume(2)
     pygame.mixer.Channel(1).set_volume(0.5)
-    pygame.mixer.Channel(1).play(gfx["audio"]["titletrack"], -1)
+    #pygame.mixer.Channel(1).play(gfx["audio"]["titletrack"], -1)
 ##    dialogueQueue.append("Hello there! Blahblahblahblah")
 ##    dialogueQueue.append("Have you ever been to the moon?\nI have.")
 ##    dialogueQueue.append("Ham and cheese omlete")
     while (running):
+        running = Tick(records)
         while time.perf_counter() - lastFrame < (1 / FPS):
             pass#print(time.perf_counter() - lastFrame)
         lastFrame = time.perf_counter()
         Draw(screenScaled, records)
-        running = Tick(records)
         
     pygame.quit()
     print("Game ended.")
