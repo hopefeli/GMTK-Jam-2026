@@ -4,7 +4,7 @@
 # Compilation command "pyinstaller --onefile countDown.py"
 #
 
-VERSION = "0.26"
+VERSION = "0.28"
 
 header = ("COUNTDOWN GAMEJAM - VERSION : " + VERSION)
 print(header)

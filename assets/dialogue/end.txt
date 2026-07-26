@@ -1,28 +1,28 @@
 
-blank ~ ~ ~ todie-winded: *wheeze*...*cough*!
+blank ~ dialoguesound ~ ~ todie-winded: *wheeze*...*cough*!
 
-blank ~ ~ ~ todie-desparate: Hello? Oliver?
+blank ~ dialoguesound ~ ~ todie-desparate: Hello? Oliver?
 
-blank ~ ~ ~ oliver-worried: Hello?
+blank ~ dialoguesound ~ ~ oliver-worried: Hello?
 
-blank ~ ~ ~ oliver-happy: Huh? Todie?
+blank ~ dialoguesound ~ ~ oliver-happy: Huh? Todie?
 
-blank ~ ~ ~ oliver-worried: It's been so long! I thought you were working in the city!
+blank ~ dialoguesound ~ ~ oliver-worried: It's been so long! I thought you were working in the city!
 
-blank ~ ~ ~ oliver-worried: A-are you okay? You look like you were running! If you're in a hurry, you don't have to stay...
+blank ~ dialoguesound ~ ~ oliver-worried: A-are you okay? You look like you were running! If you're in a hurry, you don't have to stay...
 
-blank ~ ~ ~ todie-overwhelmed: Ugh...
+blank ~ dialoguesound ~ ~ todie-overwhelmed: Ugh...
 
-reunion-bg ~ ~ ~ NULL: 
+reunion-bg ~ dialoguesound ~ ~ NULL: 
 
-reunion-bg ~ ~ ~ todie-hug: I'm fine, it's gonna be fine.
+reunion-bg ~ dialoguesound ~ ~ todie-hug: I'm fine, it's gonna be fine.
 
-reunion-bg ~ ~ ~ todie-hug: I'm sorry I've been so absent. I just got so busy, a-and I didn't know if I should reach out.
+reunion-bg ~ dialoguesound ~ ~ todie-hug: I'm sorry I've been so absent. I just got so busy, a-and I didn't know if I should reach out.
 
-reunion-bg ~ ~ ~ todie-hug: I...I just...
+reunion-bg ~ dialoguesound ~ ~ todie-hug: I...I just...
 
-reunion-end ~ ~ ~ oliver-happy: Hahaha! You don't need to worry so much Toads, I'm just glad to get to see you again.
+reunion-end ~ dialoguesound ~ ~ oliver-happy: Hahaha! You don't need to worry so much Toads, I'm just glad to get to see you again.
 
-reunion-end ~ ~ ~ todie-hug-2: Thank you.
+reunion-end ~ dialoguesound ~ ~ todie-hug-2: Thank you.
 
-reunion-end ~ ~ ~ END:    THE END`This game was created for the GMTK Game Jam 2026 with the theme of "COUNTDOWN".``Artwork, narrative & design - `    Shaelina C.``Additional art, sound and design`& all the good ideas -`    Felicia Cappleman``Programming & puzzle design - `    Kenny Garstin``Thank you for your time and attention. 
+reunion-end ~ dialoguesound ~ ~ END:    THE END`This game was created for the GMTK Game Jam 2026 with the theme of "COUNTDOWN".``Artwork, narrative & design - `    Shaelina C.``Additional art, sound and design`& all the good ideas -`    Felicia Cappleman``Programming & puzzle design - `    Kenny Garstin``Thank you for your time and attention. 

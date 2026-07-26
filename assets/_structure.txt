@@ -97,18 +97,26 @@ levels
 	level4.txt
 	level5.txt
 	level6.txt
+	level7.txt
 cutsceneImages
-	MC.png
-	DOCTOR.png
 	doctor-clip.png
 	doctor-glasses.png
+	DOCTOR.png
+	MC.png
+	oliver-happy.png
+	oliver-wary.png
+	oliver-worried.png
 	phone.png
 	todie-desparate.png
+	todie-hug-2.png
+	todie-hug.png
 	todie-neutral-talking.png
 	todie-neutral.png
+	todie-overwhelmed.png
 	todie-sad-talking.png
 	todie-sad.png
 	todie-shocked.png
+	todie-winded.png
 illustrations
 	none.bmp
 	blank.bmp
