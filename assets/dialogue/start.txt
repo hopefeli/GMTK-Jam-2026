@@ -41,11 +41,13 @@ Polaroid ~ dialoguesound ~ ~ todie-sad: *sigh*.
 
 Polaroid ~ 245445__blukotek__old-phone-ringtone-poland ~ ~ phone: *ring ring*!
 
+Polaroid ~ dialoguesound ~ ~ todie-shocked: Ah!
+
 Polaroid ~ dialoguesound ~ ~ todie-desparate: Oliver? Hey, I'm really sorry about being so absent, I-I need to-
 
 Polaroid ~ dialoguesound ~ ~ phone: HELLO! Just a friendly reminder from your local clinic! You only have 6 hours left to live!
 
-Polaroid ~ dialoguesound ~ ~ phone: If you have any remaining regrets important items on your bucket list, now's the time to get, get, get to it!
+Polaroid ~ dialoguesound ~ ~ phone: If you have any remaining regrets or important items on your bucket list, now's the time to get, get, get to it!
 
 Polaroid ~ dialoguesound ~ ~ todie-shocked: ...!
 
