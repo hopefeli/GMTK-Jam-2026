@@ -32,8 +32,32 @@ tiles
 	floor-concrete-top-2.png
 	floor-concrete.png
 	floor0.bmp
-	MC-sprite-dead.png
-	MC-sprite-stand.png
+	MC-sprite-dead
+		000.png
+		001.png
+		002.png
+		003.png
+		004.png
+		005.png
+		006.png
+		007.png
+		008.png
+		009.png
+		010.png
+		011.png
+	MC-sprite-stand
+		000.png
+		001.png
+		002.png
+		003.png
+		004.png
+		005.png
+		006.png
+		007.png
+		008.png
+		009.png
+		010.png
+		011.png
 	platform-stairs-left.png
 	platform-stairs-right.png
 	platform-stairs.png

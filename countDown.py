@@ -4,7 +4,7 @@
 # Compilation command "pyinstaller --onefile countDown.py"
 #
 
-VERSION = "0.28"
+VERSION = "0.30"
 
 header = ("COUNTDOWN GAMEJAM - VERSION : " + VERSION)
 print(header)
@@ -14,6 +14,7 @@ import pygame
 import ctypes
 import time
 import copy
+import random
 
 pygame.init()
 pygame.font.init()
@@ -74,6 +75,15 @@ tileImages = {
 font = pygame.font.Font(".\\assets\\MonospaceRegular-6ZWg.ttf", 40)#'Comic Sans MS', 40)
 fontBig = pygame.font.Font(".\\assets\\MonospaceRegular-6ZWg.ttf", 80)
 showingText = False
+windowTextOptions = ["I'm so glad our monthly crate shipment came in on time!",
+                     "Hate all this construction, there's ladders everywhere!",
+                     "Blah blah blah...",
+                     "(Mumble mumble...)",
+                     "I ordered 500 boxes yesterday. Where are they?",
+                     "Hey, I just found 50 bucks on the floor!",
+                     "Where did my 50 bucks go?",
+                     ]
+windowTiles = ["j", "k"]
 dialogueQueue = []
 currentDialogue = ""
 pressingInteract = 0
@@ -99,6 +109,8 @@ MOVE_WARNING = 3
 currentMus = ""
 fadeOut = 0
 pressingNumber = 0
+windowXPoses = []
+floaters = []
 
 def DepthDictInsert (dictionary, path, item):
     subDict = dictionary
@@ -230,7 +242,12 @@ def Draw (screenScaled, records):
                         busStopX = x
                         busStopY = y
                     else:
-                        img = gfx["tiles"][tileImages[level[i][y][x]]].copy()
+                        element = gfx["tiles"][tileImages[level[i][y][x]]]
+                        if type(element) != dict:
+                            img = element.copy()
+                        else:
+                            frameName = sorted(element.keys())[int(cloudX * 0.5) % (len(element))]
+                            img = element[frameName].copy()
                         if drawLayer:
                             display.blit(img, (x * tileSize, y * tileSize))
                         else:
@@ -241,8 +258,18 @@ def Draw (screenScaled, records):
     display.blit(gfx["sprites"]["bus-stop-sign"], ((busStopX - 2) * tileSize, busStopY * tileSize))
     # Selector
     if debug:
-        display.blit(gfx["tiles"]["MC-sprite-dead"], (selX * tileSize, selY * tileSize))
-        
+        display.blit(gfx["tiles"]["MC-sprite-dead"]["000"], (selX * tileSize, selY * tileSize))
+
+    # Draw window text floaters
+    for element in floaters:
+        textLine = font.render(element[2], True, (0, 0, 0))
+        floaterImage = pygame.Surface((textLine.get_width(), textLine.get_height()))
+        floaterImage.fill("#DDDDCC")
+        floaterImage.blit(textLine, (0, 0))
+        floaterImage.set_alpha(int(element[3]))
+        if element[0] + textLine.get_width() > nativeDisplaySize[0]:
+            element[0] = nativeDisplaySize[0] - textLine.get_width()
+        display.blit(floaterImage, (element[0], element[1]))
     # Draw textbox
     if showingText:
         # Draw background
@@ -337,7 +364,10 @@ def Draw (screenScaled, records):
         x = 0
         y = 0
         for i in sorted(tileImages.keys()):
-            display.blit(gfx["tiles"][tileImages[i]], (x * tileSize, y * tileSize))
+            if type(gfx["tiles"][tileImages[i]]) == dict:
+                display.blit(gfx["tiles"][tileImages[i]]["000"], (x * tileSize, y * tileSize))
+            else:
+                display.blit(gfx["tiles"][tileImages[i]], (x * tileSize, y * tileSize))
             if x == tileSelX and y == tileSelY:
                 pygame.draw.rect(display, "#FFFFFF", (x * tileSize, y * tileSize, tileSize, tileSize), 5)
             x += 1
@@ -377,6 +407,17 @@ def UpdateDialogue ():
         if currentDialogue[2] != currentMus:
             currentMus = currentDialogue[2]
             pygame.mixer.Channel(1).play(gfx["audio"][currentMus], -1)
+
+def TriggerWindowText(x, y):
+    global floaters
+    global windowXPoses
+    global windowTextOptions
+    if windowTextOptions != []:
+        index = random.randint(0, len(windowTextOptions) - 1)
+        chosenText = windowTextOptions[index]
+        windowTextOptions.pop(index)
+        floaters.append([(x + 0.5) * tileSize, ((y + 0.5) * tileSize), chosenText, 255])
+    windowXPoses.remove(x)
 
 def Tick (records):
     global dialogueQueue
@@ -423,7 +464,23 @@ def Tick (records):
         showingText = False
         dialogueQueue = []
         currentDialogue = []
-    
+
+    # Window text
+    if len(records) > 1 and (not showingText):
+        for x in windowXPoses:
+            for y in range(0, 8):
+                if records[-1][0][y][x] == "@":
+                    windY = 7
+                    while windY > -1:
+                        if (records[-1][2][windY][x] in windowTiles) or records[-1][3][windY][x] in windowTiles:
+                            TriggerWindowText(x, windY)
+                            windY = -1
+                        windY -= 1
+    # Move floaters
+    for i in range(0, len(floaters)):
+        floaters[i][3] -= 0.5
+        if floaters[i][3] < 0:
+            floaters.pop(i)
     # Player movement
     moveWait = 4
     alreadyMoved = False
@@ -801,9 +858,20 @@ def FormatChunk (currentchunk, lineCutoff):
     currentchunk = "\n" + "\n".join(lines)
     return currentchunk
 
+def MarkWindows (level, x, y):
+    global windowXPoses
+    if (level[2][y][x] in windowTiles) or (level[3][y][x] in windowTiles):
+        if x not in windowXPoses:
+            windowXPoses.append(x)
+
 def GetCurrentLevel():
+    global windowXPoses
+    global floaters
     level, allowedMoves = ParseLevel(gfx["levels"]["level" + str(levelNum)])
     records = [level]
+    windowXPoses = []
+    floaters = []
+    ForEachTile(records[-1], MarkWindows)
     return records, allowedMoves
 
 def PrepDialogue (fileName):
