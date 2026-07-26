@@ -3,7 +3,7 @@ blank ~ dialoguesound ~ ~ todie-winded: *wheeze*...*cough*!
 
 blank ~ dialoguesound ~ ~ todie-desparate: Hello? Oliver?
 
-blank ~ dialoguesound ~ ~ oliver-worried: Hello?
+blank ~ openDoor ~ ~ oliver-worried: Hello?
 
 blank ~ dialoguesound ~ ~ oliver-happy: Huh? Todie?
 
