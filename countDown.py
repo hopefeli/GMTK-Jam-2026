@@ -4,7 +4,7 @@
 # Compilation command "pyinstaller --onefile countDown.py"
 #
 
-VERSION = "0.30"
+VERSION = "0.34"
 
 header = ("COUNTDOWN GAMEJAM - VERSION : " + VERSION)
 print(header)
@@ -24,6 +24,7 @@ pygame.mixer.init()
 
 nativeDisplaySize = (1920, 1080)
 display = pygame.Surface(nativeDisplaySize)
+DEBUGALLOWED = False
 FPS = 30
 gfx = {}
 tileSize = 135
@@ -78,7 +79,7 @@ showingText = False
 windowTextOptions = ["I'm so glad our monthly crate shipment came in on time!",
                      "Hate all this construction, there's ladders everywhere!",
                      "Blah blah blah...",
-                     "(Mumble mumble...)",
+                     "This is a delicious ham and cheese omelette.",
                      "I ordered 500 boxes yesterday. Where are they?",
                      "Hey, I just found 50 bucks on the floor!",
                      "Where did my 50 bucks go?",
@@ -479,8 +480,6 @@ def Tick (records):
     # Move floaters
     for i in range(0, len(floaters)):
         floaters[i][3] -= 0.5
-        if floaters[i][3] < 0:
-            floaters.pop(i)
     # Player movement
     moveWait = 4
     alreadyMoved = False
@@ -503,12 +502,13 @@ def Tick (records):
         while len(records) > 1:
             records.pop()
     # Debug
-    if keys[pygame.K_LSHIFT] and keys[pygame.K_p]:
-        debug = True
-        print("DEBUG ON")
-    if keys[pygame.K_LSHIFT] and keys[pygame.K_o]:
-        debug = False
-        print("DEBUG OFF")
+    if DEBUGALLOWED:
+        if keys[pygame.K_LSHIFT] and keys[pygame.K_p]:
+            debug = True
+            print("DEBUG ON")
+        if keys[pygame.K_LSHIFT] and keys[pygame.K_o]:
+            debug = False
+            print("DEBUG OFF")
     # Play undoing
     if (not debug) and (not gameWon) and (not showingText):
         if (pressingInteract % moveWait) == 1 and len(records) > 1:
