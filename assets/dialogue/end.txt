@@ -25,4 +25,4 @@ reunion-end ~ dialoguesound ~ ~ oliver-happy: Hahaha! You don't need to worry so
 
 reunion-end ~ dialoguesound ~ ~ todie-hug-2: Thank you.
 
-reunion-end ~ dialoguesound ~ ~ END:    THE END`This game was created for the GMTK Game Jam 2026 with the theme of "COUNTDOWN".``Artwork, narrative & design - `    Shaelina C.``Additional art, sound and design`& all the good ideas -`    Felicia Cappleman``Programming & puzzle design - `    Kenny Garstin``Thank you for your time and attention. 
+reunion-end ~ dialoguesound ~ ~ END:    THE END`This game was created for the GMTK Game Jam 2026 with the theme of "COUNTDOWN".``Artwork, narrative, sound editing & design - `    Shaelina C.``Additional art, music, sound and design`& all the good ideas -`    Felicia Cappleman``Programming & puzzle design - `    Kenny Garstin``Thank you for your time and attention. 
